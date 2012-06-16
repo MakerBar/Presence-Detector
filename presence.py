@@ -17,18 +17,16 @@ def application(request):
 
     output = ''
     for user in attendance:
-        if output != '':
-            output += ', '
-        output += user
+        output += user + '\n'
+    response = Response(output)
     if output == '':
-        output = 'none' # return 204? (no content)
+        response.status_code = 204 # No content
     client.close()
-    return Response(output)
+    return response
 
 def get_dict():
-    d = dict()
-    d['E4:CE:8F:24:B5:58'] = 'Bert' # laptop (wireless)
-    d['00:23:76:99:9C:AF'] = 'Bert' # phone
+    with open('macs.pckl') as f:
+        d = pickle.load(f)
     return d
 
 if __name__ == '__main__':
