@@ -1,0 +1,10 @@
+How to use:
+
+Update the list of MAC addresses / names in macdictbuilder.py and use it to generate macs.pckl.
+Assuming you're not going to be checking our router, you'll need to replace the ssh host fingerprint and hostname in presence.py.
+You'll need an ssh key to connect (I highly recommend restricting it to command="wl assoclist" in your authorized_keys file), or add a password parameter to the .connect() function (not recommended).
+
+Then: "python presence.py" should start a server on localhost:4000, or run it on your favorite WSGI enabled server.
+
+NOTE:
+if no users are found, the server returns HTTP code 204 (No Content). This often leaves browsers confused, but is great from an API perspective.
