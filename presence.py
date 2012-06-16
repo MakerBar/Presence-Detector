@@ -1,12 +1,12 @@
 from werkzeug.wrappers import Request, Response
-import paramiko, base64
+import paramiko, base64, pickle
 
 @Request.application
 def application(request):
     key = paramiko.RSAKey(data=base64.decodestring('AAAAB3NzaC1yc2EAAAADAQABAAAAgwCjvHkbqL/V0ytnfa5pIak7bxBfj6nF4S7vy51ZG8LlWYAXcQ9WGfUGfhG+l1GW9hPeQzQbeRyNiQM+ufue/M9+JKCXTIugksAnN3W+NV/DeDcq9sKR9MiiNH3ZeNtGSyPGYjcLVmK6aSVTUoEO2yRrha9fiWBy5hb93UdmJX+QguC9'))
     client = paramiko.SSHClient()
-    client.get_host_keys().add('192.168.1.1', 'ssh-rsa', key)
-    client.connect('192.168.1.1', username='root')
+    client.get_host_keys().add('[makerbar.berthartm.org]:2222', 'ssh-rsa', key)
+    client.connect('makerbar.berthartm.org', username='root', port=2222)
     stdin, stdout, stderr = client.exec_command('wl assoclist')
     usermap = get_dict()
     attendance = set()
