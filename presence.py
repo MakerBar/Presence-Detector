@@ -1,12 +1,13 @@
 from werkzeug.wrappers import Request, Response
-import paramiko, base64, pickle
+import paramiko, base64, pickle, os
 
 @Request.application
 def application(request):
     key = paramiko.RSAKey(data=base64.decodestring('AAAAB3NzaC1yc2EAAAADAQABAAAAgwCjvHkbqL/V0ytnfa5pIak7bxBfj6nF4S7vy51ZG8LlWYAXcQ9WGfUGfhG+l1GW9hPeQzQbeRyNiQM+ufue/M9+JKCXTIugksAnN3W+NV/DeDcq9sKR9MiiNH3ZeNtGSyPGYjcLVmK6aSVTUoEO2yRrha9fiWBy5hb93UdmJX+QguC9'))
     client = paramiko.SSHClient()
     client.get_host_keys().add('[makerbar.berthartm.org]:2222', 'ssh-rsa', key)
-    client.connect('makerbar.berthartm.org', username='root', port=2222)
+    wlauthkey = paramiko.RSAKey.from_private_key_file(os.path.expanduser('~/presence/keys/wlauth'))
+    client.connect('makerbar.berthartm.org', username='root', port=2222, pkey=wlauthkey)
     stdin, stdout, stderr = client.exec_command('wl assoclist')
     usermap = get_dict()
     attendance = set()
@@ -25,7 +26,7 @@ def application(request):
     return response
 
 def get_dict():
-    with open('macs.pckl') as f:
+    with open(os.path.expanduser('~/presence/macs.pckl')) as f:
         d = pickle.load(f)
     return d
 
